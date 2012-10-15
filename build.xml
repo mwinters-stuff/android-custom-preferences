@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="CustomPreferences" default="help">
+  <property name="lowerprojectname" value="custompreferences" />
+	<property name="buildmajor" value="1"/>
+	
+	<!-- version-tag: custom -->
+	<import file="../../crusecontrol/commonbuild.xml" />
+
+
+</project>
