@@ -1,0 +1,4 @@
+<resources>
+    <string name="start_date">Start Date</string>
+    <string name="end_date">End Date</string>
+</resources>
