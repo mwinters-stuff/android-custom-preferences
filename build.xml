@@ -5,6 +5,30 @@
 	
 	<!-- version-tag: custom -->
 	<import file="../../crusecontrol/commonbuild.xml" />
+	<target name="maven">
+
+		<delete>
+			<fileset dir="." includes="*.aar"/>
+		</delete>
+		<property name="aarfile" value="${ant.project.name}-${buildmajor}.${buildnumber}.aar"/>
+		
+		<zip destfile="${aarfile}">
+			<zipfileset dir="res" includes="**/*" prefix="res"/>
+			<zipfileset dir="bin" includes="AndroidManifest.xml" fullpath="AndroidManifest.xml"/>
+			<zipfileset dir="bin" includes="classes.jar" fullpath="classes.jar"/>
+			<zipfileset dir="bin" includes="R.txt" fullpath="R.txt"/>
+			<zipfileset dir="libs" includes="*.jar"  prefix="libs"/>
+		</zip>
+
+		<exec executable="mvn">
+		  <arg value="install:install-file"/>
+		  <arg value="-Dfile=${aarfile}"/>
+		  <arg value="-DgroupId=nz.org.winters"/>
+		  <arg value="-DartifactId=${lowerprojectname}"/>
+		  <arg value="-Dversion=${buildmajor}.${buildnumber}"/>
+		  <arg value="-Dpackaging=aar"/>	   
+    </exec>
+	</target>
 
 
 </project>
