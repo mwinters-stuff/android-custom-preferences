@@ -1,0 +1,108 @@
+ext.buildMajor = 1
+ext.artifactId = 'custompreferences'
+
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:0.6.+'
+    }
+}
+apply plugin: 'android-library'
+repositories {
+    mavenLocal()
+    //mavenCentral()
+    //maven {
+    //    url 'https://oss.sonatype.org/content/repositories/snapshots/'
+   //}
+}
+dependencies {
+ //   compile 'com.actionbarsherlock:actionbarsherlock:4.4.0@aar'
+    //compile 'com.android.support:support-v4:18.0.+'
+//    compile fileTree(dir: 'libs', include: '*.jar')
+ }
+
+android {
+    compileSdkVersion 18
+    buildToolsVersion "18.1.0"
+}
+
+android.libraryVariants.all { variant ->
+    println "****************************"
+    println "variant: ${variant.name}"
+    println "outputFile: ${variant.outputFile}"
+    println "theVersion: " + getTheVersion()
+    println "****************************"
+
+    variant.packageLibrary.doLast {
+        if(variant.outputFile.exists())
+        {
+          sendToMavenLocal(variant.outputFile)
+        }else
+        {
+          println "File does not exist"
+        }
+    }
+}
+
+def sendToMavenLocal(def fileOut) {
+  String osName = System.getProperty("os.name").toLowerCase();
+  if (osName.contains("windows")) 
+  {
+    ant.exec(outputproperty:"cmdOut",
+      errorproperty:"cmdErr",
+      resultproperty:"cmdExit",
+      failonerror:"false",
+      executable:"c:\\windows\\system32\\cmd.exe"
+     )
+     {
+      arg(value:'/c')
+      arg(value:'c:\\programming\\maven\\bin\\mvn.bat')
+//      arg(value:'-X')
+      arg(value:'install:install-file')
+      arg(value:"-Dfile=${fileOut}")
+      arg(value:'-DgroupId=nz.org.winters')
+      arg(value:"-DartifactId=${artifactId}")
+      arg(value:'-Dversion=' +getTheVersion() )
+      arg(value:'-Dpackaging=aar')
+    }
+  }else
+  {
+    ant.exec(outputproperty:"cmdOut",
+      errorproperty:"cmdErr",
+      resultproperty:"cmdExit",
+      failonerror:"false",
+      executable:"mvn"
+     )
+     {
+//      arg(value:'-X')
+      arg(value:'install:install-file')
+      arg(value:"-Dfile=${fileOut}")
+      arg(value:'-DgroupId=nz.org.winters')
+      arg(value:"-DartifactId=${artifactId}")
+      arg(value:'-Dversion=' +getTheVersion() )
+      arg(value:'-Dpackaging=aar')
+    }
+  }
+
+  println "return code:  ${ant.project.properties.cmdExit}"
+  println "stderr:       ${ant.project.properties.cmdErr}"
+  println "stdout:       ${ant.project.properties.cmdOut}"
+
+  if("${ant.project.properties.cmdExit}" == "1")
+  {
+    ant.fail('Maven failed!')
+  }
+  
+}
+
+
+def getTheVersion() {
+    return hasProperty('BUILD_NUMBER') ? ("${buildMajor}." + BUILD_NUMBER) : "DEV"
+}
+
+def getTheOutputFile()
+{
+  return "${outputFile}"
+}
