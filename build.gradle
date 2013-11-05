@@ -99,7 +99,7 @@ def sendToMavenLocal(def fileOut) {
 
 
 def getTheVersion() {
-    return hasProperty('BUILD_NUMBER') ? ("${buildMajor}." + BUILD_NUMBER) : "DEV"
+    return hasProperty('BUILD_NUMBER') ? ("${buildMajor}." + BUILD_NUMBER) : ("${buildMajor}." + "999")
 }
 
 def getTheOutputFile()
