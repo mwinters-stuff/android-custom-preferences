@@ -16,6 +16,7 @@
         <item>#eeeeee</item>
         <item>#cccccc</item>
         <item>#888888</item>
+        <item>#000000</item>
     </string-array>
 
     <string-array name="homescreen_color_choice_values" translatable="false">
