@@ -14,34 +14,34 @@ package nz.org.winters.android.custompreference;
  * See the License for the specific language governing permissions and
  * limitations under the License.
 */
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.preference.Preference;
+import android.support.v4.app.FragmentActivity;
 import android.util.AttributeSet;
 import android.view.View;
-import nz.org.winters.android.custompreference.numberpicker.NumberPickerBuilder;
-import nz.org.winters.android.custompreference.numberpicker.NumberPickerDialogFragment;
+import com.doomonafireball.betterpickers.numberpicker.NumberPickerBuilder;
+import com.doomonafireball.betterpickers.numberpicker.NumberPickerDialogFragment;
 import nz.org.winters.android.custompreferences.R;
 
-public class IntegerPreference extends Preference implements NumberPickerDialogFragment.NumberPickerDialogHandler
+public class IntegerPreferenceCompat extends Preference implements NumberPickerDialogFragment.NumberPickerDialogHandler
 {
   int mValue;
 
-  public IntegerPreference(Context context)
+  public IntegerPreferenceCompat(Context context)
   {
     super(context);
     initialize();
   }
 
-  public IntegerPreference(Context context, AttributeSet attrs)
+  public IntegerPreferenceCompat(Context context, AttributeSet attrs)
   {
     super(context, attrs);
     initialize();
   }
 
-  public IntegerPreference(Context context, AttributeSet attrs, int defStyle)
+  public IntegerPreferenceCompat(Context context, AttributeSet attrs, int defStyle)
   {
     super(context, attrs, defStyle);
     initialize();
@@ -99,10 +99,10 @@ public class IntegerPreference extends Preference implements NumberPickerDialogF
   protected void onClick() {
     super.onClick();
 
-    Activity activity = (Activity) getContext();
+    FragmentActivity activity = (FragmentActivity) getContext();
 
     NumberPickerBuilder numberPickerBuilder = new NumberPickerBuilder();
-    numberPickerBuilder.setFragmentManager(activity.getFragmentManager());
+    numberPickerBuilder.setFragmentManager(activity.getSupportFragmentManager());
     numberPickerBuilder.setStyleResId(R.style.BetterPickersDialogFragment_Light);
     numberPickerBuilder.setPlusMinusVisibility(View.GONE);
     numberPickerBuilder.setDecimalVisibility(View.GONE);

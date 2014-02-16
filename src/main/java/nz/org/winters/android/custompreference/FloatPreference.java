@@ -14,18 +14,33 @@ package nz.org.winters.android.custompreference;
  * See the License for the specific language governing permissions and
  * limitations under the License.
 */
+import android.annotation.TargetApi;
+import android.app.Activity;
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.os.Build;
 import android.preference.EditTextPreference;
+import android.preference.Preference;
+import android.support.v4.app.FragmentActivity;
 import android.text.InputType;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.EditText;
+import nz.org.winters.android.custompreference.numberpicker.NumberPickerBuilder;
+import nz.org.winters.android.custompreference.numberpicker.NumberPickerDialogFragment;
+import nz.org.winters.android.custompreferences.R;
 
-public class FloatPreference extends EditTextPreference 
+@TargetApi(Build.VERSION_CODES.HONEYCOMB)
+public class FloatPreference extends Preference implements NumberPickerDialogFragment.NumberPickerDialogHandler
 {
 
+  float mValue;
 
+  public FloatPreference(Context context)
+  {
+    super(context);
+    initialize();
+  }
 
   public FloatPreference(Context context, AttributeSet attrs)
   {
@@ -42,8 +57,6 @@ public class FloatPreference extends EditTextPreference
   private void initialize()
   {
     setPersistent(true);
-//    setPositiveButtonText(R.string.color_new_color);
-//    setNegativeButtonText(R.string.color_old_color);
   }
   
   @Override
@@ -52,72 +65,64 @@ public class FloatPreference extends EditTextPreference
   }
 
   @Override
-  protected void onSetInitialValue(boolean restoreValue, Object defaultValue) {
-      setText(restoreValue ? Float.toString(getPersistedFloat((float)0.0)) : Float.toString((Float)defaultValue));
+  protected void onSetInitialValue(boolean restoreValue, Object defaultValue)
+  {
+    setValue(restoreValue ? getPersistedFloat(0) : (Float) defaultValue);
   }
 
-  
-  @Override 
-  public String getText()
+  public String getFragmentTag()
   {
-    return Float.toString(getPersistedFloat(0));
+    return "float_" + getKey();
   }
 
-  @Override 
-  public void setText(String text)
+  public float getValue()
   {
-    persistFloat(Float.parseFloat(text));
+    return mValue;
   }
-  
+
+  public void setValue(float value) {
+    if (callChangeListener(value)) {
+        mValue = value;
+        persistFloat(value);
+        notifyChanged();
+    }
+  }
+
+
   @Override
   protected void onBindView(View view)
   {
    // TextView mSummaryView = (TextView) view.findViewById(android.R.id.summary);
-    setSummary(getText());
+    setSummary(Float.toString(getValue()));
 
     
     super.onBindView(view);
 
   }
 
-  @Override
-  protected void onBindDialogView(View view)
-  {
-    super.onBindDialogView(view);
-    
-    EditText edit = getEditText();
-    
-    edit.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
 
+  @Override
+  protected void onClick() {
+    super.onClick();
+
+    Activity activity = (Activity) getContext();
+
+    NumberPickerBuilder numberPickerBuilder = new NumberPickerBuilder();
+    numberPickerBuilder.setFragmentManager(activity.getFragmentManager());
+    numberPickerBuilder.setStyleResId(R.style.BetterPickersDialogFragment_Light);
+    numberPickerBuilder.setPlusMinusVisibility(View.GONE);
+    numberPickerBuilder.setDecimalVisibility(View.VISIBLE);
+    numberPickerBuilder.addNumberPickerDialogHandler(this);
+    numberPickerBuilder.setLabelText(getTitle().toString());
+    numberPickerBuilder.show();
   }
 
-//  @Override
-//  protected void onDialogClosed(boolean positiveResult)
-//  {
-//    if (positiveResult)
-//    {
-//      int color = mSelectorView.getColor();
-//      persistInt(color);
-//      setSummary(Integer.toString(getValue()));
-//    }
-//    super.onDialogClosed(positiveResult);
-//  }
-//
-//  public int getValue()
-//  {
-//    return getPersistedInt(0);
-//  }
-
-//  @Override
-//  protected View onCreateDialogView()
-//  {
-////    mSelectorView = new ColorSelectorView(getContext());
-////    mSelectorView.setColor(getColour());
-////    mSelectorView.setOnColorChangedListener(this);
-////    return mSelectorView;
-//  }
+  @Override
+  public void onDialogNumberSet(int reference, int number, double decimal, boolean isNegative, double fullNumber)
+  {
+    setValue((float)fullNumber);
+  }
 
 
-  
 
 }
