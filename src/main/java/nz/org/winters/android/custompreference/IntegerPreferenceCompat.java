@@ -55,7 +55,7 @@ public class IntegerPreferenceCompat extends Preference implements NumberPickerD
 
   @Override
   protected Object onGetDefaultValue(TypedArray a, int index) {
-    return a.getFloat(index,(float)0.0);
+    return a.getInt(index,(int)0);
   }
 
   @Override

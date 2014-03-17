@@ -55,7 +55,7 @@ public class IntegerPreference extends Preference implements NumberPickerDialogF
 
   @Override
   protected Object onGetDefaultValue(TypedArray a, int index) {
-    return a.getFloat(index,(float)0.0);
+    return a.getInteger(index,(int)0);
   }
 
   @Override
@@ -66,7 +66,7 @@ public class IntegerPreference extends Preference implements NumberPickerDialogF
 
   public String getFragmentTag()
   {
-    return "float_" + getKey();
+    return "int_" + getKey();
   }
 
   public int getValue()
