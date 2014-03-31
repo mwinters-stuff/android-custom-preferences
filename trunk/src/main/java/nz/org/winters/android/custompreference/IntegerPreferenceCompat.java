@@ -14,7 +14,7 @@ package nz.org.winters.android.custompreference;
  * See the License for the specific language governing permissions and
  * limitations under the License.
 */
-import android.app.Activity;
+
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.preference.Preference;
@@ -54,14 +54,21 @@ public class IntegerPreferenceCompat extends Preference implements NumberPickerD
 
 
   @Override
-  protected Object onGetDefaultValue(TypedArray a, int index) {
-    return a.getInt(index,(int)0);
+  protected Object onGetDefaultValue(TypedArray a, int index)
+  {
+    return a.getInt(index, (int) 0);
   }
 
   @Override
   protected void onSetInitialValue(boolean restoreValue, Object defaultValue)
   {
-    setValue(restoreValue ? getPersistedInt(0) : (Integer) defaultValue);
+    try
+    {
+      setValue(restoreValue ? getPersistedInt(0) : (Integer) defaultValue);
+    } catch (Exception ignore)
+    {
+
+    }
   }
 
   public String getFragmentTag()
@@ -74,8 +81,10 @@ public class IntegerPreferenceCompat extends Preference implements NumberPickerD
     return mValue;
   }
 
-  public void setValue(int value) {
-    if (callChangeListener(value)) {
+  public void setValue(int value)
+  {
+    if (callChangeListener(value))
+    {
       mValue = value;
       persistInt(value);
       notifyChanged();
@@ -96,7 +105,8 @@ public class IntegerPreferenceCompat extends Preference implements NumberPickerD
 
 
   @Override
-  protected void onClick() {
+  protected void onClick()
+  {
     super.onClick();
 
     FragmentActivity activity = (FragmentActivity) getContext();
@@ -116,8 +126,6 @@ public class IntegerPreferenceCompat extends Preference implements NumberPickerD
   {
     setValue(number);
   }
-
-
 
 
 }
