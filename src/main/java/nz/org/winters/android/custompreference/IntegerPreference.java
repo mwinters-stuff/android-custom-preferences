@@ -61,7 +61,13 @@ public class IntegerPreference extends Preference implements NumberPickerDialogF
   @Override
   protected void onSetInitialValue(boolean restoreValue, Object defaultValue)
   {
-    setValue(restoreValue ? getPersistedInt(0) : (Integer) defaultValue);
+    try
+    {
+      setValue(restoreValue ? getPersistedInt(0) : (Integer) defaultValue);
+    }catch(Exception ignore)
+    {
+
+    }
   }
 
   public String getFragmentTag()
